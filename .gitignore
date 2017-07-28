@@ -1,0 +1,18 @@
+# Intellij
+.idea/
+*.iws
+*.iml
+*.class
+*.ipr
+
+out/
+
+# Maven
+log/
+target/
+
+
+/.gradle/
+gradle/
+gradle-app.setting
+build/
