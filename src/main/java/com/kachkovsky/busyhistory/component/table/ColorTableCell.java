@@ -3,6 +3,10 @@ package com.kachkovsky.busyhistory.component.table;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 
+/**
+ * https://stackoverflow.com/questions/23075139/datepicker-in-javafx-tablecell
+ * @param <T>
+ */
 public class ColorTableCell<T> extends TableCell<T, Color> {
     private final ColorPicker colorPicker;
 

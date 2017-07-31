@@ -2,6 +2,7 @@ package com.kachkovsky.busyhistory.controller;
 
 import com.kachkovsky.busyhistory.component.table.LocalDatePickerTableCell;
 import com.kachkovsky.busyhistory.data.BusyItem;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -88,6 +89,7 @@ public class TableController implements Initializable {
             t.getTableView().getItems().get(t.getTablePosition().getRow()).setDate(t.getNewValue());
             // System.out.println(t.getTableView().getItems().get(t.getTablePosition().getRow()).getDate());
             //((TableColumn)t.getSource()).getTableView().requestLayout();
+            //t.consume();
         });
 
         hoursTableColumn.setCellFactory(col -> {
@@ -138,7 +140,7 @@ public class TableController implements Initializable {
 
         //not working
         tableView.getItems().add(new BusyItem(LocalDate.now(), 8., "sfgnadgi"));
-
+       // tableView.getItems().add(new BusyItem(LocalDate.now(), 4., "asdasfgnadgi"));
         //dateTableColumn.setResizable(false);
 
 //
