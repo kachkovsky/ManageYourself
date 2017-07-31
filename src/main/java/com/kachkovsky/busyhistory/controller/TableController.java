@@ -1,5 +1,6 @@
 package com.kachkovsky.busyhistory.controller;
 
+import com.kachkovsky.busyhistory.component.table.EditCell;
 import com.kachkovsky.busyhistory.component.table.LocalDatePickerTableCell;
 import com.kachkovsky.busyhistory.data.BusyItem;
 import javafx.application.Platform;
@@ -127,7 +128,8 @@ public class TableController implements Initializable {
 //            c.graphicProperty().bind(Bindings.when(c.emptyProperty()).then((Node) null).otherwise(comboBox));
 //            return c;
 //        });
-        infoTableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        //infoTableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        infoTableColumn.setCellFactory(column -> EditCell.createStringEditCell());
         infoTableColumn.setOnEditCommit(t -> t.getTableView().getItems().get(t.getTablePosition().getRow()).setInfo(t.getNewValue()));
 
 //        dateTableColumn.setCellFactory(new Callback<TableColumn<BusyItem, LocalDate>, TableCell<BusyItem, LocalDate>>() {
