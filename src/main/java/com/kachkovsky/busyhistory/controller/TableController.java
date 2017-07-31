@@ -1,6 +1,7 @@
 package com.kachkovsky.busyhistory.controller;
 
 import com.kachkovsky.busyhistory.component.table.EditCell;
+import com.kachkovsky.busyhistory.component.table.GraphicComboBoxTableCell;
 import com.kachkovsky.busyhistory.component.table.LocalDatePickerTableCell;
 import com.kachkovsky.busyhistory.data.BusyItem;
 import javafx.application.Platform;
@@ -81,7 +82,7 @@ public class TableController implements Initializable {
 //        hoursTableColumn.setEditable(true);
 //        infoTableColumn.setEditable(true);
 
-        //hoursTableColumn.setCellFactory(ComboBoxTableCell.forTableColumn(COMBO_BOX_DOUBLE_OPTIONS_ARR));
+        //hoursTableColumn.setCellFactory(GraphicComboBoxTableCell.forTableColumn(COMBO_BOX_DOUBLE_OPTIONS_ARR));
 
         dateTableColumn.setCellFactory(LocalDatePickerTableCell::new);
         dateTableColumn.setOnEditCommit(t -> {
@@ -94,7 +95,7 @@ public class TableController implements Initializable {
         });
 
         hoursTableColumn.setCellFactory(col -> {
-            ComboBoxTableCell<BusyItem, Object> comboBoxTableCell = new ComboBoxTableCell<>(COMBO_BOX_DOUBLE_OPTIONS_ARR);
+            GraphicComboBoxTableCell<BusyItem, Object> comboBoxTableCell = new GraphicComboBoxTableCell<>(COMBO_BOX_DOUBLE_OPTIONS_ARR);
             comboBoxTableCell.setComboBoxEditable(true);
             return comboBoxTableCell;
         });
