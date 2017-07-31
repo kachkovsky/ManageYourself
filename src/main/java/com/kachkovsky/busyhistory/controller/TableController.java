@@ -1,9 +1,11 @@
 package com.kachkovsky.busyhistory.controller;
 
+import com.kachkovsky.busyhistory.component.table.LocalDatePickerTableCell;
 import com.kachkovsky.busyhistory.data.BusyItem;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -13,6 +15,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.DefaultStringConverter;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -21,26 +24,16 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class TableController implements Initializable {
-    private static final List<String> COMBO_BOX_OPTIONS = Arrays.asList(
-            "0.15", "0.3", "0.45", "1",
-            "1.15", "1.3", "1.45", "2",
-            "2.15", "2.3", "2.45", "3",
-            "3.15", "3.3", "3.45", "4",
-            "4.15", "4.3", "4.45", "5",
-            "5.15", "5.3", "5.45", "6",
-            "6.15", "6.3", "6.45", "7",
-            "7.15", "7.3", "7.45", "8"
-    );
-    private static final List<Double> COMBO_BOX_DOUBLE_OPTIONS = Arrays.asList(
-            0.15, 0.3, 0.45, 1.,
-            1.15, 1.3, 1.45, 2.,
-            2.15, 2.3, 2.45, 3.,
-            3.15, 3.3, 3.45, 4.,
-            4.15, 4.3, 4.45, 5.,
-            5.15, 5.3, 5.45, 6.,
-            6.15, 6.3, 6.45, 7.,
-            7.15, 7.3, 7.45, 8.
-    );
+//    private static final List<String> COMBO_BOX_OPTIONS = Arrays.asList(
+//            "0.15", "0.3", "0.45", "1",
+//            "1.15", "1.3", "1.45", "2",
+//            "2.15", "2.3", "2.45", "3",
+//            "3.15", "3.3", "3.45", "4",
+//            "4.15", "4.3", "4.45", "5",
+//            "5.15", "5.3", "5.45", "6",
+//            "6.15", "6.3", "6.45", "7",
+//            "7.15", "7.3", "7.45", "8"
+//    );
 
     private static final Double[] COMBO_BOX_DOUBLE_OPTIONS_ARR = {
             0.15, 0.3, 0.45, 1.,
@@ -52,6 +45,8 @@ public class TableController implements Initializable {
             6.15, 6.3, 6.45, 7.,
             7.15, 7.3, 7.45, 8.
     };
+    private static final List<Double> COMBO_BOX_DOUBLE_OPTIONS = Arrays.asList(COMBO_BOX_DOUBLE_OPTIONS_ARR);
+
     @FXML
     private TableView<BusyItem> tableView;
 
@@ -75,27 +70,33 @@ public class TableController implements Initializable {
         tableView.setEditable(true);
         ObservableList<BusyItem> items = tableView.getItems();
         infoTableColumn.prefWidthProperty().bind(tableView.widthProperty().subtract(hoursTableColumn.widthProperty()).subtract(dateTableColumn.widthProperty()).subtract(10));
-        dateTableColumn.setResizable(false);
-        //dateTableColumn.setEditable(true);
-        dateTableColumn.setCellValueFactory(
-                new PropertyValueFactory<>("date"));
-        hoursTableColumn.setCellValueFactory(
-                new PropertyValueFactory<>("hours"));
-        infoTableColumn.setCellValueFactory(
-                new PropertyValueFactory<>("info"));
-        //infoTableColumn.setEditable(true);
+
+
+        dateTableColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        hoursTableColumn.setCellValueFactory(new PropertyValueFactory<>("hours"));
+        infoTableColumn.setCellValueFactory(new PropertyValueFactory<>("info"));
+//        dateTableColumn.setEditable(true);
+//        hoursTableColumn.setEditable(true);
+//        infoTableColumn.setEditable(true);
 
         //hoursTableColumn.setCellFactory(ComboBoxTableCell.forTableColumn(COMBO_BOX_DOUBLE_OPTIONS_ARR));
 
+        dateTableColumn.setCellFactory(LocalDatePickerTableCell::new);
+        dateTableColumn.setOnEditCommit(t -> {
+            // System.out.println("Commit");
+            //System.out.println(t.getTableView().getItems().get(t.getTablePosition().getRow()).getDate());
+            t.getTableView().getItems().get(t.getTablePosition().getRow()).setDate(t.getNewValue());
+            // System.out.println(t.getTableView().getItems().get(t.getTablePosition().getRow()).getDate());
+            //((TableColumn)t.getSource()).getTableView().requestLayout();
+        });
 
         hoursTableColumn.setCellFactory(col -> {
             ComboBoxTableCell<BusyItem, Object> comboBoxTableCell = new ComboBoxTableCell<>(COMBO_BOX_DOUBLE_OPTIONS_ARR);
             comboBoxTableCell.setComboBoxEditable(true);
             return comboBoxTableCell;
         });
-
         hoursTableColumn.setOnEditCommit((CellEditEvent<BusyItem, Object> t) -> {
-            Double newValue=null;
+            Double newValue = null;
             Object newValueObj = t.getNewValue();
             if (newValueObj instanceof Double) {
                 newValue = (Double) newValueObj;
@@ -103,9 +104,7 @@ public class TableController implements Initializable {
                 newValue = Double.parseDouble(newValueObj.toString());
             }
             if (newValue != null) {
-                t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())
-                        .setHours(newValue);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setHours(newValue);
             }
         });
 
@@ -126,16 +125,8 @@ public class TableController implements Initializable {
 //            c.graphicProperty().bind(Bindings.when(c.emptyProperty()).then((Node) null).otherwise(comboBox));
 //            return c;
 //        });
-
         infoTableColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        infoTableColumn.setOnEditCommit(new EventHandler<CellEditEvent<BusyItem, String>>() {
-            @Override
-            public void handle(CellEditEvent<BusyItem, String> t) {
-                t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())
-                        .setInfo(t.getNewValue());
-            }
-        });
+        infoTableColumn.setOnEditCommit(t -> t.getTableView().getItems().get(t.getTablePosition().getRow()).setInfo(t.getNewValue()));
 
 //        dateTableColumn.setCellFactory(new Callback<TableColumn<BusyItem, LocalDate>, TableCell<BusyItem, LocalDate>>() {
 //            @Override
@@ -147,6 +138,9 @@ public class TableController implements Initializable {
 
         //not working
         tableView.getItems().add(new BusyItem(LocalDate.now(), 8., "sfgnadgi"));
+
+        //dateTableColumn.setResizable(false);
+
 //
 //        tableView.setItems(data);
 //        data.add(new BusyItem(LocalDate.now(), 8., "sfgnadgi"));
