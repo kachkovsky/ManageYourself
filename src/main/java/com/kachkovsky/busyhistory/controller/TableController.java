@@ -4,9 +4,7 @@ import com.kachkovsky.busyhistory.component.table.EditCell;
 import com.kachkovsky.busyhistory.component.table.GraphicComboBoxTableCell;
 import com.kachkovsky.busyhistory.component.table.LocalDatePickerTableCell;
 import com.kachkovsky.busyhistory.data.BusyItem;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import com.kachkovsky.javafx.GUIUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,10 +13,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.util.converter.DefaultStringConverter;
+import javafx.util.StringConverter;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -76,6 +72,7 @@ public class TableController implements Initializable {
 
 
         dateTableColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        dateTableColumn.setMinWidth(110);
         hoursTableColumn.setCellValueFactory(new PropertyValueFactory<>("hours"));
         infoTableColumn.setCellValueFactory(new PropertyValueFactory<>("info"));
 //        dateTableColumn.setEditable(true);
@@ -95,7 +92,25 @@ public class TableController implements Initializable {
         });
 
         hoursTableColumn.setCellFactory(col -> {
-            GraphicComboBoxTableCell<BusyItem, Object> comboBoxTableCell = new GraphicComboBoxTableCell<>(COMBO_BOX_DOUBLE_OPTIONS_ARR);
+            GraphicComboBoxTableCell<BusyItem, Object> comboBoxTableCell = new GraphicComboBoxTableCell<>(new StringConverter<Object>() {
+
+                @Override
+                public String toString(Object object) {
+                    if(object==null){
+                        return null;
+                    }
+                    return object.toString();
+                }
+
+                @Override
+                public Object fromString(String string) {
+                    if(string==null){
+                        return 0.;
+                    }
+                    return Double.parseDouble(string);
+                }
+            },
+                    hoursTableColumn, COMBO_BOX_DOUBLE_OPTIONS_ARR);
             comboBoxTableCell.setComboBoxEditable(true);
             return comboBoxTableCell;
         });
@@ -143,9 +158,9 @@ public class TableController implements Initializable {
 
         //not working
         tableView.getItems().add(new BusyItem(LocalDate.now(), 8., "sfgnadgi"));
-       // tableView.getItems().add(new BusyItem(LocalDate.now(), 4., "asdasfgnadgi"));
+        tableView.getItems().add(new BusyItem(LocalDate.now(), 4., "asdasfgnadgi"));
         //dateTableColumn.setResizable(false);
-
+        //GUIUtils.autoFitTable(tableView);
 //
 //        tableView.setItems(data);
 //        data.add(new BusyItem(LocalDate.now(), 8., "sfgnadgi"));
