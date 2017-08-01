@@ -1,12 +1,7 @@
 package com.kachkovsky.busyhistory.component.table;
 
-import javafx.event.Event;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellEditEvent;
-import javafx.scene.control.TablePosition;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -14,6 +9,7 @@ import javafx.util.StringConverter;
 
 /**
  * https://gist.github.com/james-d/be5bbd6255a4640a5357
+ *
  * @param <S>
  * @param <T>
  */
@@ -24,10 +20,10 @@ public class EditCell<S, T> extends TableCell<S, T> {
     private final TextField textField = new TextField();
 
     // Converter for converting the text in the text field to the user type, and vice-versa:
-    private final StringConverter<T> converter ;
+    private final StringConverter<T> converter;
 
     public EditCell(StringConverter<T> converter) {
-        this.converter = converter ;
+        this.converter = converter;
 
         itemProperty().addListener((obx, oldItem, newItem) -> {
             if (newItem == null) {
@@ -42,8 +38,13 @@ public class EditCell<S, T> extends TableCell<S, T> {
         textField.setOnAction(evt -> {
             commitEdit(this.converter.fromString(textField.getText()));
         });
+        textField.setOnMouseClicked(e -> {
+            if (!isEditing()) {
+                startEdit();
+            }
+        });
         textField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
-            if (! isNowFocused) {
+            if (!isNowFocused) {
                 commitEdit(this.converter.fromString(textField.getText()));
             }
         });
@@ -87,6 +88,7 @@ public class EditCell<S, T> extends TableCell<S, T> {
 
     /**
      * Convenience method for creating an EditCell for a String value.
+     *
      * @return
      */
     public static <S> EditCell<S, String> createStringEditCell() {
@@ -117,15 +119,17 @@ public class EditCell<S, T> extends TableCell<S, T> {
         // This block is necessary to support commit on losing focus, because the baked-in mechanism
         // sets our editing state to false before we can intercept the loss of focus.
         // The default commitEdit(...) method simply bails if we are not editing...
-        if (! isEditing() && ! item.equals(getItem())) {
-            TableView<S> table = getTableView();
-            if (table != null) {
-                TableColumn<S, T> column = getTableColumn();
-                CellEditEvent<S, T> event = new CellEditEvent<>(table,
-                        new TablePosition<S,T>(table, getIndex(), column),
-                        TableColumn.editCommitEvent(), item);
-                Event.fireEvent(column, event);
-            }
+        if (!isEditing() && !item.equals(getItem())) {
+            updateItem(item, item == null);
+
+//            TableView<S> table = getTableView();
+//            if (table != null) {
+//                TableColumn<S, T> column = getTableColumn();
+//                CellEditEvent<S, T> event = new CellEditEvent<>(table,
+//                        new TablePosition<S, T>(table, getIndex(), column),
+//                        TableColumn.editCommitEvent(), item);
+//                Event.fireEvent(column, event);
+//            }
         }
 
         super.commitEdit(item);
