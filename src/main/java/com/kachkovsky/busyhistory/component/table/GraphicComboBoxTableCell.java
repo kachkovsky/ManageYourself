@@ -27,10 +27,10 @@ public class GraphicComboBoxTableCell<S, T> extends TableCell<S, T> {
 
     static <T> ComboBox<T> createComboBox(final Cell<T> cell,
                                           final ObservableList<T> items,
-                                          final ObjectProperty<StringConverter<T>> converter
-    ,T value) {
+                                          final ObjectProperty<StringConverter<T>> converter,
+                                          T value) {
         ComboBox<T> comboBox = new ComboBox<T>(items);
-        if(value!=null) {
+        if (value != null) {
             comboBox.setValue(value);
         }
         comboBox.converterProperty().bind(converter);
@@ -44,45 +44,16 @@ public class GraphicComboBoxTableCell<S, T> extends TableCell<S, T> {
     }
 
     static <T> void updateItem(final Cell<T> cell,
-                               final StringConverter<T> converter,
-                               final HBox hbox,
-                               final Node graphic,
                                final ComboBox<T> comboBox) {
         cell.setText(null);
-        cell.setGraphic(comboBox);
-        if (cell.isEmpty()) {
-            //cell.setText(null);
-            //cell.setGraphic(null);
-        } else {
-            if (cell.isEditing()) {
-                if (comboBox != null) {
-                    comboBox.getSelectionModel().select(cell.getItem());
-                }
-                //cell.setText(null);
-
-                if (graphic != null) {
-                    hbox.getChildren().setAll(graphic, comboBox);
-                    cell.setGraphic(hbox);
-                } else {
-                    cell.setGraphic(comboBox);
-                }
-            } else {
-                if (comboBox!=null && cell.getItem() != null) {
-                    //System.out.print(cell.getItem().getClass());
-                    try {
-                        System.out.println(comboBox);
-                        comboBox.setValue(cell.getItem());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                //cell.setText(getItemText(cell, converter));
-                cell.setGraphic(graphic);
+        if (!cell.isEmpty()) {
+            if (comboBox != null && cell.getItem() != null) {
+                comboBox.setValue(cell.getItem());
             }
+            cell.setGraphic(comboBox);
         }
     }
 
-    ;
 
     private static <T> String getItemText(Cell<T> cell, StringConverter<T> converter) {
         return converter == null ?
@@ -219,11 +190,12 @@ public class GraphicComboBoxTableCell<S, T> extends TableCell<S, T> {
      */
     @Override
     public void startEdit() {
+        //System.out.println("startEdit");
         if (!isEditable() || !getTableView().isEditable() || !getTableColumn().isEditable()) {
             return;
         }
 
-
+        //System.out.println("startEdit1");
         comboBox.getSelectionModel().select(getItem());
 
         super.startEdit();
@@ -249,6 +221,6 @@ public class GraphicComboBoxTableCell<S, T> extends TableCell<S, T> {
     public void updateItem(T item, boolean empty) {
         super.updateItem(item, empty);
         comboBox.setValue(item);
-        updateItem(this, getConverter(), null, comboBox, null);
+        updateItem(this, comboBox);
     }
 }
