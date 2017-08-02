@@ -23,19 +23,15 @@ apply plugin: 'javafx-gradle-plugin'
 
 jfx {
     // minimal requirement for jfxJar-task
-    mainClass = 'full.qualified.nameOf.TheMainClass'
+    mainClass = 'com.kachkovsky.busyhistory.Main'
 
     // minimal requirement for jfxNative-task
     vendor = 'YourName'
 }
-hibernate.version="4.3.6.Final"
 
 dependencies {
     compile group: 'org.hibernate.javax.persistence', name: 'hibernate-jpa-2.1-api', version: '1.0.0.Final'
     compile group: 'javax.persistence', name: 'persistence-api', version: '1.0.2'
-    compile group: 'org.hibernate', name: 'hibernate-entitymanager',hibernate.version
-    compile group: 'org.hibernate', name: 'hibernate-c3p0',hibernate.version
-    compile group: 'org.hibernate', name: 'hibernate-jpamodelgen',hibernate.version
-    compile group: 'xml-apis', name: 'xml-apis','1.4.01'
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.10.Final'
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }

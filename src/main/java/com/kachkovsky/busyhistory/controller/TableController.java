@@ -1,5 +1,6 @@
 package com.kachkovsky.busyhistory.controller;
 
+import com.kachkovsky.busyhistory.component.table.DeleteCell;
 import com.kachkovsky.busyhistory.component.table.EditCell;
 import com.kachkovsky.busyhistory.component.table.GraphicComboBoxTableCell;
 import com.kachkovsky.busyhistory.component.table.LocalDatePickerTableCell;
@@ -55,7 +56,13 @@ public class TableController implements Initializable {
     @FXML
     private TableColumn<BusyItem, String> infoTableColumn;
     @FXML
+    private TableColumn deleteRowTableColumn;
+
+    @FXML
     private Button applyBtn;
+
+    @FXML
+    private Button addBtn;
 
     private final ObservableList<BusyItem> data =
             FXCollections.observableArrayList();
@@ -67,11 +74,11 @@ public class TableController implements Initializable {
 
         tableView.setEditable(true);
         ObservableList<BusyItem> items = tableView.getItems();
-        infoTableColumn.prefWidthProperty().bind(tableView.widthProperty().subtract(hoursTableColumn.widthProperty()).subtract(dateTableColumn.widthProperty()).subtract(10));
+        infoTableColumn.prefWidthProperty().bind(tableView.widthProperty().subtract(hoursTableColumn.widthProperty()).subtract(dateTableColumn.widthProperty()).subtract(deleteRowTableColumn.widthProperty()).subtract(10));
 
 
         dateTableColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
-        dateTableColumn.setMinWidth(110);
+        //dateTableColumn.setMinWidth(110);
         hoursTableColumn.setCellValueFactory(new PropertyValueFactory<>("hours"));
         infoTableColumn.setCellValueFactory(new PropertyValueFactory<>("info"));
 //        dateTableColumn.setEditable(true);
@@ -95,7 +102,7 @@ public class TableController implements Initializable {
 
                 @Override
                 public String toString(Object object) {
-                    if(object==null){
+                    if (object == null) {
                         return null;
                     }
                     return object.toString();
@@ -103,13 +110,13 @@ public class TableController implements Initializable {
 
                 @Override
                 public Object fromString(String string) {
-                    if(string==null){
+                    if (string == null) {
                         return 0.;
                     }
                     return Double.parseDouble(string);
                 }
             },
-                    hoursTableColumn, COMBO_BOX_DOUBLE_OPTIONS_ARR);
+                    hoursTableColumn, (Object[]) COMBO_BOX_DOUBLE_OPTIONS_ARR);
             comboBoxTableCell.setComboBoxEditable(true);
             return comboBoxTableCell;
         });
@@ -126,6 +133,7 @@ public class TableController implements Initializable {
             }
         });
 
+        deleteRowTableColumn.setCellFactory(column -> new DeleteCell());
 
 //        hoursTableColumn.setCellFactory(col -> {
 //            TableCell<TableView<BusyItem>, Property<Double>> c = new TableCell<>();
@@ -168,6 +176,10 @@ public class TableController implements Initializable {
             for (BusyItem item : tableView.getItems()) {
                 System.out.println(String.format("%s %s %s", item.getDate(), item.getHours(), item.getInfo()));
             }
+        });
+
+        addBtn.setOnAction(e -> {
+            tableView.getItems().add(new BusyItem(LocalDate.now(), 2., ""));
         });
     }
 }
