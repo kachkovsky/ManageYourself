@@ -5,7 +5,9 @@ import com.kachkovsky.busyhistory.component.table.EditCell;
 import com.kachkovsky.busyhistory.component.table.GraphicComboBoxTableCell;
 import com.kachkovsky.busyhistory.component.table.LocalDatePickerTableCell;
 import com.kachkovsky.busyhistory.data.BusyItem;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -65,7 +67,11 @@ public class TableController implements Initializable {
     private Button addBtn;
 
     private final ObservableList<BusyItem> data =
-            FXCollections.observableArrayList();
+            FXCollections.observableArrayList(busyItem -> new Observable[]{
+                    busyItem.dateProperty(),
+                    busyItem.hoursProperty(),
+                    busyItem.infoProperty()
+            });
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -73,7 +79,8 @@ public class TableController implements Initializable {
 //        d.
 
         tableView.setEditable(true);
-        ObservableList<BusyItem> items = tableView.getItems();
+        tableView.setItems(data);
+        //ObservableList<BusyItem> items = tableView.getItems();
         infoTableColumn.prefWidthProperty().bind(tableView.widthProperty().subtract(hoursTableColumn.widthProperty()).subtract(dateTableColumn.widthProperty()).subtract(deleteRowTableColumn.widthProperty()).subtract(10));
 
 
@@ -81,6 +88,17 @@ public class TableController implements Initializable {
         //dateTableColumn.setMinWidth(110);
         hoursTableColumn.setCellValueFactory(new PropertyValueFactory<>("hours"));
         infoTableColumn.setCellValueFactory(new PropertyValueFactory<>("info"));
+
+//        dateTableColumn.setCellValueFactory(cellData -> {
+//            Function<BusyItem, ObjectProperty<LocalDate>> dateProperty = BusyItem::dateProperty;
+//            return dateProperty.apply(cellData.getValue());
+//        });
+//        hoursTableColumn.setCellValueFactory(cellData -> {
+//            Function<BusyItem, ObservableValue> hoursProperty = BusyItem::hoursProperty;
+//            return hoursProperty.apply(cellData.getValue());
+//        });
+
+
 //        dateTableColumn.setEditable(true);
 //        hoursTableColumn.setEditable(true);
 //        infoTableColumn.setEditable(true);
@@ -180,6 +198,16 @@ public class TableController implements Initializable {
 
         addBtn.setOnAction(e -> {
             tableView.getItems().add(new BusyItem(LocalDate.now(), 2., ""));
+        });
+
+        tableView.getItems().addListener(new ListChangeListener<BusyItem>() {
+            @Override
+            public void onChanged(Change<? extends BusyItem> c) {
+                while (c.next()) {
+                    System.out.println(String.format("%s %s %s %s", c.getAddedSize(), c.getFrom(), c.getTo(), c.getRemovedSize()));
+                    System.out.println(String.format("%s %s %s %s %s", c.wasAdded(), c.wasPermutated(), c.wasRemoved(), c.wasReplaced(), c.wasUpdated()));
+                }
+            }
         });
     }
 }

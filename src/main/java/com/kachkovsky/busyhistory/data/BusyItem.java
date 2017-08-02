@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 public class BusyItem {
 
-    public final ObjectProperty<LocalDate> date;
+    private final ObjectProperty<LocalDate> date;
     private final DoubleProperty hours;
     private final SimpleStringProperty info;
 
@@ -38,5 +38,17 @@ public class BusyItem {
 
     public void setInfo(String info) {
         this.info.set(info);
+    }
+
+    public ObjectProperty<LocalDate> dateProperty() {
+        return date;
+    }
+
+    public DoubleProperty hoursProperty() {
+        return hours;
+    }
+
+    public SimpleStringProperty infoProperty() {
+        return info;
     }
 }
