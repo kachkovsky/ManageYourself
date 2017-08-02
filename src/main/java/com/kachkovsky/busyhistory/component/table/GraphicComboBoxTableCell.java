@@ -6,9 +6,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
 
 
@@ -46,7 +44,9 @@ public class GraphicComboBoxTableCell<S, T> extends TableCell<S, T> {
     static <T> void updateItem(final Cell<T> cell,
                                final ComboBox<T> comboBox) {
         cell.setText(null);
-        if (!cell.isEmpty()) {
+        if (cell.isEmpty()) {
+            cell.setGraphic(null);
+        } else {
             if (comboBox != null && cell.getItem() != null) {
                 comboBox.setValue(cell.getItem());
             }

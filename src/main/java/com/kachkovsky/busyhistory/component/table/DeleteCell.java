@@ -30,6 +30,9 @@ public class DeleteCell<S, T> extends TableCell<S, T> {
             this.deleteButton = new Button("", new ImageView(Holder.IMAGE_DELETE));
             this.deleteButton.setPadding(Insets.EMPTY);
             this.setGraphic(deleteButton);
+            deleteButton.setOnAction(e -> {
+                getTableView().getItems().remove(getTableRow().getIndex());
+            });
         }
     }
 

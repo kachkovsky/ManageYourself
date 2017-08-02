@@ -12,11 +12,11 @@ import javafx.scene.control.TableCell;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.function.Function;
 
 /**
  * https://stackoverflow.com/questions/23075139/datepicker-in-javafx-tablecell
+ *
  * @param <T>
  */
 public class DatePickerCell<T> extends TableCell<T, LocalDate> {
