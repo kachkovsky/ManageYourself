@@ -3,9 +3,7 @@ package com.kachkovsky.busyhistory.data;
 import com.kachkovsky.busyhistory.data.DecSequence.Holder;
 import javafx.beans.property.*;
 
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -19,13 +17,14 @@ public class BusyItem {
     private int id;
 
     public BusyItem(LocalDate date, double hours, String info) {
-        this.id = Holder.INSTANCE.next();
+        //this.id = Holder.INSTANCE.next();
         this.date = new SimpleObjectProperty<>(date);
         this.hours = new SimpleDoubleProperty(hours);
         this.info = new SimpleStringProperty(info);
     }
 
     @Id
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
     public int getId() {
         return id;
     }

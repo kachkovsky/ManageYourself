@@ -6,6 +6,7 @@ import com.kachkovsky.busyhistory.component.table.GraphicComboBoxTableCell;
 import com.kachkovsky.busyhistory.component.table.LocalDatePickerTableCell;
 import com.kachkovsky.busyhistory.data.BusyItem;
 import com.kachkovsky.busyhistory.db.PersistenceManager;
+import com.kachkovsky.busyhistory.db.hibernate.BusyItemRepository;
 import com.kachkovsky.javafx.ApplyStageListener;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -71,7 +72,7 @@ public class TableController implements Initializable, ApplyStageListener {
     private Button addBtn;
 
     private EntityManager em;
-
+    private BusyItemRepository repository;
     private final ObservableList<BusyItem> data =
             FXCollections.observableArrayList(busyItem -> new Observable[]{
                     busyItem.dateProperty(),
@@ -81,22 +82,13 @@ public class TableController implements Initializable, ApplyStageListener {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("XX");
-        try {
-            em = PersistenceManager.INSTANCE.getEntityManager();
-        }catch (Throwable t){
-            t.printStackTrace();
-        }
-        System.out.println("XX2");
-
-//        DatePicker d;
-//        d.
-//        CriteriaBuilder cb = em.getCriteriaBuilder();
-//        CriteriaQuery<BusyItem> q = cb.createQuery(BusyItem.class);
-//        Root<BusyItem> root = q.from(BusyItem.class);
-//        CriteriaQuery<BusyItem> select = q.select(root);
-//        List<BusyItem> resultList = em.createQuery(select).getResultList();
-//        data.addAll(resultList);
+        System.out.println("Connect");
+        em = PersistenceManager.INSTANCE.getEntityManager();
+        repository = new BusyItemRepository(em);
+        System.out.println("Connected");
+        List<BusyItem> list = repository.list();
+        System.out.println("Loaded " + list.size());
+        data.addAll(list);
 
         tableView.setEditable(true);
         tableView.setItems(data);
@@ -223,9 +215,25 @@ public class TableController implements Initializable, ApplyStageListener {
         tableView.getItems().addListener(new ListChangeListener<BusyItem>() {
             @Override
             public void onChanged(Change<? extends BusyItem> c) {
-                while (c.next()) {
-                    System.out.println(String.format("%s %s %s %s", c.getAddedSize(), c.getFrom(), c.getTo(), c.getRemovedSize()));
-                    System.out.println(String.format("%s %s %s %s %s", c.wasAdded(), c.wasPermutated(), c.wasRemoved(), c.wasReplaced(), c.wasUpdated()));
+                try {
+                    while (c.next()) {
+
+                        System.out.println(String.format("%s %s %s %s", c.getAddedSize(), c.getFrom(), c.getTo(), c.getRemovedSize()));
+                        System.out.println(String.format("%s %s %s %s %s", c.wasAdded(), c.wasPermutated(), c.wasRemoved(), c.wasReplaced(), c.wasUpdated()));
+                        if (c.wasAdded()) {
+                            for (BusyItem b : c.getAddedSubList()) {
+                                System.out.println(b.getId());
+                                em.persist(b);
+                                System.out.println(b.getId());
+                            }
+                        }
+                        if (c.wasUpdated()) {
+                            BusyItem busyItem = c.getList().get(c.getFrom());
+                            em.merge(busyItem);
+                        }
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             }
         });
