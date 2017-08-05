@@ -33,6 +33,7 @@ public class BusyItem {
         this.id = id;
     }
 
+    @Transient
     public LocalDate getDate() {
         return date.get();
     }

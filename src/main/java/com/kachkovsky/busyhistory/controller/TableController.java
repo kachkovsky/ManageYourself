@@ -7,6 +7,8 @@ import com.kachkovsky.busyhistory.component.table.LocalDatePickerTableCell;
 import com.kachkovsky.busyhistory.data.BusyItem;
 import com.kachkovsky.busyhistory.db.PersistenceManager;
 import com.kachkovsky.busyhistory.db.hibernate.BusyItemRepository;
+import com.kachkovsky.busyhistory.db.transaction.TransactionCallable;
+import com.kachkovsky.busyhistory.db.transaction.TransactionRunnable;
 import com.kachkovsky.javafx.ApplyStageListener;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
@@ -86,7 +88,12 @@ public class TableController implements Initializable, ApplyStageListener {
         em = PersistenceManager.INSTANCE.getEntityManager();
         repository = new BusyItemRepository(em);
         System.out.println("Connected");
-        List<BusyItem> list = repository.list();
+        List<BusyItem> list = new TransactionCallable<List<BusyItem>>(em) {
+            @Override
+            protected List<BusyItem> doTransaction(EntityManager em) {
+                return repository.list();
+            }
+        }.call();
         System.out.println("Loaded " + list.size());
         data.addAll(list);
 
@@ -222,14 +229,22 @@ public class TableController implements Initializable, ApplyStageListener {
                         System.out.println(String.format("%s %s %s %s %s", c.wasAdded(), c.wasPermutated(), c.wasRemoved(), c.wasReplaced(), c.wasUpdated()));
                         if (c.wasAdded()) {
                             for (BusyItem b : c.getAddedSubList()) {
-                                System.out.println(b.getId());
-                                em.persist(b);
-                                System.out.println(b.getId());
+                                new TransactionRunnable(em) {
+                                    @Override
+                                    protected void doTransaction(EntityManager em) {
+                                        em.persist(b);
+                                    }
+                                }.run();
                             }
                         }
                         if (c.wasUpdated()) {
                             BusyItem busyItem = c.getList().get(c.getFrom());
-                            em.merge(busyItem);
+                            new TransactionRunnable(em) {
+                                @Override
+                                protected void doTransaction(EntityManager em) {
+                                    em.merge(busyItem);
+                                }
+                            }.run();
                         }
                     }
                 } catch (Exception e) {

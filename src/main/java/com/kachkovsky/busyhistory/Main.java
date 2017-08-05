@@ -2,6 +2,7 @@ package com.kachkovsky.busyhistory;
 
 import com.kachkovsky.busyhistory.data.BusyItem;
 import com.kachkovsky.busyhistory.db.PersistenceManager;
+import com.kachkovsky.busyhistory.db.transaction.TransactionRunnable;
 import com.kachkovsky.javafx.WindowHelper;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -26,6 +27,15 @@ public class Main extends Application {
 //        CriteriaQuery<BusyItem> select = q.select(root);
 //        List<BusyItem> resultList = em.createQuery(select).getResultList();
 //        System.out.print(resultList.size());
+//
+//        BusyItem gg = new BusyItem(LocalDate.now(), 8., "GG");
+//        new TransactionRunnable(em) {
+//            @Override
+//            protected void doTransaction(EntityManager em) {
+//                em.persist(gg);
+//            }
+//        }.run();
+//        em.close();
 //    }
 
     @Override
