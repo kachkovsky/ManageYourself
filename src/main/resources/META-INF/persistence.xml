@@ -1,37 +1,26 @@
-<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
-http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
-             version="2.1">
-    <persistence-unit name="billing-punit" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
+    <persistence-unit name="busyhistorypu" transaction-type="RESOURCE_LOCAL">
+        <class>com.kachkovsky.busyhistory.data.BusyItem</class>
         <properties>
-            <property name="connection.driver_class">org.h2.Driver</property>
-            <property name="connection.url">jdbc:h2:database/test</property>
-            <property name="connection.username">sa</property>
-            <property name="connection.password"/>
+            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
+            <property name="javax.persistence.jdbc.url"    value="jdbc:h2:mem:test" />
+            <property name="javax.persistence.jdbc.user" value="sa" />
+            <property name="javax.persistence.jdbc.password" value="" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <!-- <property name="hibernate.hbm2ddl.auto" value="validate" />-->
+            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+            <property name="show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
 
-            <property name="hibernate.default_schema">PUBLIC</property>
-
-            <!-- JDBC connection pool (use the built-in) -->
-            <property name="connection.pool_size">1</property>
-
-            <!-- SQL dialect -->
-            <property name="dialect">org.hibernate.dialect.H2Dialect</property>
-
-
-
-
-            <property name="hibernate.show_sql" value="true" />
-            <property name="hibernate.format_sql" value="true" />
-
-           <!-- <property name="hibernate.hbm2ddl.auto" value="validate" />-->
-            <property name="hibernate.hbm2ddl.auto" value="create" />
             <!-- Configuring Connection Pool -->
-            <property name="hibernate.c3p0.min_size" value="5" />
-            <property name="hibernate.c3p0.max_size" value="20" />
-            <property name="hibernate.c3p0.timeout" value="500" />
-            <property name="hibernate.c3p0.max_statements" value="50" />
-            <property name="hibernate.c3p0.idle_test_period" value="2000" />
+            <property name="hibernate.c3p0.min_size" value="5"/>
+            <property name="hibernate.c3p0.max_size" value="20"/>
+            <property name="hibernate.c3p0.timeout" value="500"/>
+            <property name="hibernate.c3p0.max_statements" value="50"/>
+            <property name="hibernate.c3p0.idle_test_period" value="2000"/>
         </properties>
     </persistence-unit>
 </persistence>

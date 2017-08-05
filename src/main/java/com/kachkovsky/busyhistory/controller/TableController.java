@@ -5,6 +5,8 @@ import com.kachkovsky.busyhistory.component.table.EditCell;
 import com.kachkovsky.busyhistory.component.table.GraphicComboBoxTableCell;
 import com.kachkovsky.busyhistory.component.table.LocalDatePickerTableCell;
 import com.kachkovsky.busyhistory.data.BusyItem;
+import com.kachkovsky.busyhistory.db.PersistenceManager;
+import com.kachkovsky.javafx.ApplyStageListener;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -16,15 +18,17 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
+import javax.persistence.EntityManager;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class TableController implements Initializable {
+public class TableController implements Initializable, ApplyStageListener {
 //    private static final List<String> COMBO_BOX_OPTIONS = Arrays.asList(
 //            "0.15", "0.3", "0.45", "1",
 //            "1.15", "1.3", "1.45", "2",
@@ -66,6 +70,8 @@ public class TableController implements Initializable {
     @FXML
     private Button addBtn;
 
+    private EntityManager em;
+
     private final ObservableList<BusyItem> data =
             FXCollections.observableArrayList(busyItem -> new Observable[]{
                     busyItem.dateProperty(),
@@ -75,8 +81,22 @@ public class TableController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        System.out.println("XX");
+        try {
+            em = PersistenceManager.INSTANCE.getEntityManager();
+        }catch (Throwable t){
+            t.printStackTrace();
+        }
+        System.out.println("XX2");
+
 //        DatePicker d;
 //        d.
+//        CriteriaBuilder cb = em.getCriteriaBuilder();
+//        CriteriaQuery<BusyItem> q = cb.createQuery(BusyItem.class);
+//        Root<BusyItem> root = q.from(BusyItem.class);
+//        CriteriaQuery<BusyItem> select = q.select(root);
+//        List<BusyItem> resultList = em.createQuery(select).getResultList();
+//        data.addAll(resultList);
 
         tableView.setEditable(true);
         tableView.setItems(data);
@@ -208,6 +228,14 @@ public class TableController implements Initializable {
                     System.out.println(String.format("%s %s %s %s %s", c.wasAdded(), c.wasPermutated(), c.wasRemoved(), c.wasReplaced(), c.wasUpdated()));
                 }
             }
+        });
+
+    }
+
+    @Override
+    public void applyStageActions(Stage stage) {
+        stage.setOnHidden(e -> {
+            em.close();
         });
     }
 }

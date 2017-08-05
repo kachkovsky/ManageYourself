@@ -19,7 +19,7 @@ public enum PersistenceManager {
         // persistence-unit element.
 
         Map<String, String> properties = new HashMap<>();
-        properties.put(JDBC_URL_KEY, getJDBCUrl("127.0.0.1","busy"));
+        //properties.put(JDBC_URL_KEY, getJDBCUrl("127.0.0.1","busy"));
         emFactory = Persistence.createEntityManagerFactory("busyhistorypu", properties);
     }
 
