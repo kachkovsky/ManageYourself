@@ -21,6 +21,7 @@ public class BusyItemRepository {
         CriteriaQuery<BusyItem> q = cb.createQuery(BusyItem.class);
         Root<BusyItem> root = q.from(BusyItem.class);
         CriteriaQuery<BusyItem> select = q.select(root);
+        q.orderBy(cb.asc(root.get("dateMillis")));
         return em.createQuery(select).getResultList();
     }
 }

@@ -1,6 +1,5 @@
 package com.kachkovsky.busyhistory.data;
 
-import com.kachkovsky.busyhistory.data.DecSequence.Holder;
 import javafx.beans.property.*;
 
 import javax.persistence.*;
@@ -16,6 +15,10 @@ public class BusyItem {
     private final SimpleStringProperty info;
     private int id;
 
+    public BusyItem() {
+        this(LocalDate.now(), 0., "");
+    }
+
     public BusyItem(LocalDate date, double hours, String info) {
         //this.id = Holder.INSTANCE.next();
         this.date = new SimpleObjectProperty<>(date);
@@ -24,7 +27,7 @@ public class BusyItem {
     }
 
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     public int getId() {
         return id;
     }
@@ -44,7 +47,7 @@ public class BusyItem {
     }
 
     public void setDateMillis(long longValue) {
-        Instant.ofEpochMilli(longValue).atZone(ZoneId.systemDefault()).toLocalDate();
+        setDate(Instant.ofEpochMilli(longValue).atZone(ZoneId.systemDefault()).toLocalDate());
     }
 
     public void setDate(LocalDate date) {
