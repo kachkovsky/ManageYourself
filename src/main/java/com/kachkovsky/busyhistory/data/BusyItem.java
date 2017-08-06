@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Objects;
 
 @Entity
 public class BusyItem {
@@ -20,7 +21,6 @@ public class BusyItem {
     }
 
     public BusyItem(LocalDate date, double hours, String info) {
-        //this.id = Holder.INSTANCE.next();
         this.date = new SimpleObjectProperty<>(date);
         this.hours = new SimpleDoubleProperty(hours);
         this.info = new SimpleStringProperty(info);
@@ -51,6 +51,7 @@ public class BusyItem {
     }
 
     public void setDate(LocalDate date) {
+        if (Objects.equals(this.date.get(), date)) return;
         this.date.set(date);
     }
 
@@ -60,6 +61,7 @@ public class BusyItem {
     }
 
     public void setHours(double hours) {
+        if (this.hours.get() == hours) return;
         this.hours.set(hours);
     }
 
@@ -69,6 +71,7 @@ public class BusyItem {
     }
 
     public void setInfo(String info) {
+        if (Objects.equals(this.info.get(), info)) return;
         this.info.set(info);
     }
 
