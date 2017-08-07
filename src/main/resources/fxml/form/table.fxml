@@ -24,6 +24,7 @@
         <columns>
           <TableColumn fx:id="dateTableColumn" minWidth="110.0" prefWidth="110.0" text="Date" />
           <TableColumn fx:id="hoursTableColumn" minWidth="75.0" prefWidth="75.0" text="Hours" />
+            <TableColumn fx:id="projectTableColumn" minWidth="75.0" prefWidth="75.0" text="Project" />
           <TableColumn fx:id="infoTableColumn" minWidth="75.0" prefWidth="75.0" text="Information" />
           <TableColumn fx:id="deleteRowTableColumn" minWidth="28.0" prefWidth="30.0" text="X" />
         </columns>

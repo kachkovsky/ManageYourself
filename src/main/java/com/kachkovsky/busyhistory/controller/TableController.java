@@ -5,6 +5,7 @@ import com.kachkovsky.busyhistory.component.table.EditCell;
 import com.kachkovsky.busyhistory.component.table.GraphicComboBoxTableCell;
 import com.kachkovsky.busyhistory.component.table.LocalDatePickerTableCell;
 import com.kachkovsky.busyhistory.data.BusyItem;
+import com.kachkovsky.busyhistory.data.Project;
 import com.kachkovsky.busyhistory.db.PersistenceManager;
 import com.kachkovsky.busyhistory.db.hibernate.BusyItemRepository;
 import com.kachkovsky.busyhistory.db.transaction.TransactionCallable;
@@ -20,6 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.ChoiceBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -49,6 +51,8 @@ public class TableController implements Initializable, ApplyStageListener {
     private TableColumn<BusyItem, LocalDate> dateTableColumn;
     @FXML
     private TableColumn<BusyItem, Object> hoursTableColumn;
+    @FXML
+    private TableColumn<BusyItem, Project> projectTableColumn;
     @FXML
     private TableColumn<BusyItem, String> infoTableColumn;
     @FXML
@@ -122,6 +126,8 @@ public class TableController implements Initializable, ApplyStageListener {
             comboBoxTableCell.setComboBoxEditable(true);
             return comboBoxTableCell;
         });
+        projectTableColumn.setCellFactory(ChoiceBoxTableCell.forTableColumn());
+
         hoursTableColumn.setOnEditCommit((CellEditEvent<BusyItem, Object> t) -> {
             Double newValue = null;
             Object newValueObj = t.getNewValue();
