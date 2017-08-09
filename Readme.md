@@ -6,7 +6,8 @@ This is also a good set of cell implementations for an editable table to see, so
 
 # Requirements
 
-Plase setup h2db
+Setup h2db from
+http://www.h2database.com/html/main.html
 
 # Start 
 
